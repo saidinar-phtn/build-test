@@ -25,8 +25,9 @@
     "starter-kit"
   ],
   "dependencies": {
-    "@thecodingmachine/rnb-plugin-typescript": "^1.0.5",
+    "@thecodingmachine/rnb-plugin-typescript": "file:./../rnb-plugin-typescript",
     "kleur": "^4.1.4",
-    "prompts": "^2.4.1"
+    "prompts": "^2.4.1",
+    "ora": "^3.4.0"
   }
 }

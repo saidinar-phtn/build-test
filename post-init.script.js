@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+const process = require('process')
 const { rmdir } = require('fs').promises;
 const { applyPlugins } = require('./template/plugins');
 
