@@ -29,7 +29,8 @@
   "dependencies": {
     "@thecodingmachine/rnb-plugin-typescript": "file:./../rnb-plugin-typescript",
     "kleur": "^4.1.4",
-    "prompts": "^2.4.1"
+    "prompts": "^2.4.1",
+    "readline": "^1.3.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^16.0.2",

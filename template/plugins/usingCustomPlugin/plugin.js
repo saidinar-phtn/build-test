@@ -1,54 +1,59 @@
 const process = require('process')
 const prompts = require('prompts')
 const { execSync } = require('child_process')
-const { green, blue } = require('kleur')
-const promptsOptions = require('./_prompts')
-const ttys = require('ttys');
+const { green, gray } = require('kleur')
+const readline = require('readline');
 
 module.exports = {
   async apply(value, previousValues) {
     if (value) {
-      let x = ''
-
-      // let counter = 0
-      // const customPluginPrompt = {
-      //   type: 'text',
-      //   name: 'path',
-      //   message: 'Use a custom rnb-plugin',
-      //   onRender(kleur) {
-      //     counter++
-      //     if (counter === 1) {
-      //       this.msg = ''
-      //     }
-      //     console.log(
-      //       '\033[1D',
-      //       kleur.green(`Enter the name of you package : ${kleur.gray('<organisation>/<package_name>')}`),
-      //       x
-      //     )
-      //   },
-      //   initial: false,
-      // }
-      console.log(
-        '\033[1D',
-        kleur.green(`Enter the name of you package : ${kleur.gray('<organisation>/<package_name>')}`),
-        x
-      )
+      let path = ''
 
       process.stdin.on('keypress', (str, key) => {
         if (key.ctrl && key.name === 'c') {
           process.exit();
-        } else {
-          x = `${x}${str}`
+        } else if (key.name === 'backspace' ) {
+          path = path.substring(0, path.length - 1);
           console.log(
-            '\033[1D',
-            kleur.green(`Enter the name of you package : ${kleur.gray('<organisation>/<package_name>')}`),
-            x
+            '\033[40D',
+            '\033[2A',
+            '\033[K',
+            `${green(`Enter the name of you package : `)} ${path}`,
+            '\033[1B',
+          )
+        } else {
+          path = `${path}${str}`
+          console.log(
+            '\033[40D',
+            '\033[2A',
+            '\033[K',
+            `${green(`Enter the name of you package : `)} ${path}`,
+            '\033[1B',
           )
         }
       });
 
+      console.log(
+        green(` Enter the name of you package : ${gray('<organisation>/<package_name>')}`),
+        '\n'
+      )
 
-      const { path } = await prompts(customPluginPrompt)
+      const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+      });
+
+      await new Promise((resolve, reject) => {
+        rl.question('', (answer) => {
+          path = answer
+          rl.close()
+          resolve()
+        })
+
+        rl.on('close', function () {
+          console.log('\nBYE BYE !!!');
+        });
+      })
 
       await execSync(
         `yarn add -D ${path}`,
@@ -57,8 +62,6 @@ module.exports = {
 
       const {name, promptsOptions, apply} = await require(path)
 
-
-      console.log('coucou', name, promptsOptions)
       if (!promptsOptions) {
         await apply(null, previousValues)
         return { [name]: null, ...previousValues }
